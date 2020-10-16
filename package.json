@@ -2,12 +2,12 @@
   "name": "test_task_shop_js",
   "version": "1.0.0",
   "description": "node project",
-  "main": "app.js",
+  "main": "src/app.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=production node app.js",
-    "server": "nodemon app.js",
-    "lint": "eslint --fix --ext .js src",
-    "dev": "cross-env NODE_ENV=development concurrently \"npm run server\" \"npm run lint\""
+    "start:dev": "node -r dotenv/config --inspect=0.0.0.0:9227",
+    "start": "npm run lint && npm run server",
+    "server": "nodemon",
+    "lint": "eslint --fix --ext .js src"
   },
   "dependencies": {
     "bcrypt": "^5.0.0",
@@ -22,7 +22,9 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.18",
     "nodemailer": "^6.4.8",
-    "pug": "^3.0.0"
+    "pug": "^3.0.0",
+    "uuid": "latest",
+    "uuid": "latest"
   },
   "devDependencies": {
     "@types/bcrypt": "^3.0.0",

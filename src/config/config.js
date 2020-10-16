@@ -26,7 +26,7 @@ module.exports = {
         maxRequests: 1000
     },
 
-    MONGODB_URL: 'mongodb://localhost/smakolyky_shop',
+    MONGODB_URL: 'mongodb://localhost/test_shop',
 
     ROOT_EMAIL: 'mail',
     ROOT_EMAIL_PASSWORD: 'password',
