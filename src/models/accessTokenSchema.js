@@ -1,6 +1,6 @@
-const {Schema, model} = require('mongoose');
+const { Schema, model } = require('mongoose');
 
-const schema = new Schema ({
+const schema = new Schema({
         accessToken: {
             type: String,
             required: true
@@ -11,10 +11,9 @@ const schema = new Schema ({
         },
         userId: {
             type: Schema.Types.ObjectId,
-            ref: 'user'
+            ref: 'User'
         }
     }, {
         timestamps: true
-    }
-);
-module.exports = model('accessTokenSchema', schema);
+    });
+module.exports = model('AccessToken', schema);

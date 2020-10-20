@@ -1,6 +1,6 @@
-const {Schema, model} = require('mongoose');
+const { Schema, model } = require('mongoose');
 
-const schema = new Schema ({
+const schema = new Schema({
         event: {
             type: String,
             required: true
@@ -10,8 +10,7 @@ const schema = new Schema ({
             required: true
         },
         data: Schema.Types.Mixed
-    },{
+    }, {
         timestamps: true
-    }
-);
+    });
 module.exports = model('logSchema', schema);

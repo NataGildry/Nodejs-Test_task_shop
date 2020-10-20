@@ -24,7 +24,7 @@
     "nodemailer": "^6.4.8",
     "pug": "^3.0.0",
     "uuid": "latest",
-    "uuid": "latest"
+    "@hapi/joi": "latest"
   },
   "devDependencies": {
     "@types/bcrypt": "^3.0.0",

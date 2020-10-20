@@ -1,26 +1,77 @@
 const UserModel = require('../models/userSchema');
 const {hashPassword} = require('../helpers');
+const {tokinizer} = require('../helpers');
+const {registerValidation} = require('../helpers/emailPasswordValidator');
+const jwt = require('jsonwebtoken');
+const {config} = require('../config');
 
 module.exports = {
     getAllUsers: async (req, res) => {
         const users = await UserModel.find({});
-        res.json(users)
+        res.json(users);
     },
     createUser: async (req, res) => {
+        // validate the user
+        const {error} = registerValidation(req.body);
+        if (error) {
+            return res.status(400).json({error: error.details[0].message});
+        }
+        const user = req.body;
+        const {email, password, username} = user;
+        const candidate = await UserModel.findOne({email});
+        if (candidate) {
+            return res.status(400).json(
+                {message: 'User already exists'}
+            );
+        }
+        const hashedPassword = await hashPassword(password);
+        const newUser = new UserModel({email, password: hashedPassword, username});
         try {
-            const user = req.body;
-            const {email, password, username} = user;
+            await newUser.save(user);
+            const token = jwt.sign(
+                // payload data
+                {
+                    name: user.username,
+                    id: user._id,
+                },
+                config.JWT_CONFIRM_EMAIL_SECRET
+            );
+            return res.header('userRegister', token).json({
+                error: null,
+                data: {
+                    token,
+                },
+            });
+        } catch (e) {
+            res.status(500).json({message: 'Something went wrong. User Registration failed'});
+        }
+    },
+    confirmUser: async (req, res) => {
+        const user = req.body;
+        const {email} = user;
+        try {
             const candidate = await UserModel.findOne({email});
             if (candidate) {
-                return res.status(400).json(
-                    {message: 'Username already exists'})
+                const {_id, status, tokens = []} = candidate;
+                const tokenToDelete = req.get('Authorization');
+
+                if (status !== 'pending') {
+                    return new Error('User is already activated');
+                }
+                await UserModel.updateOne({_id}, {status: 'confirmed'}, {new: true});
+                const index = tokens.findIndex(({action, token}) => {
+                    return token === tokenToDelete && action === 'userRegister';
+                });
+
+                if (index !== -1) {
+                    tokens.splice(index, 1);
+
+                    await UserModel.updateOne({_id}, {tokens}, {new: true});
+                }
             }
-                    const hashedPassword = await hashPassword(password);
-                    const newUser = new UserModel ({email, password:hashedPassword, username});;
-                   await newUser.save(user);
+            res.end();
         } catch (e) {
-            res.status(500).json({message: 'Something went wrong. User Registration failed'})
+            res.status(500).json({message: 'Something went wrong. User Confirmation failed'} + e);
         }
-        res.status(201).json({message: 'User have been created'});
     }
-    };
+};

@@ -1,7 +1,7 @@
-const {Schema, model} = require('mongoose');
-const {ProductTypeEnum} = require('../config');
+const { Schema, model } = require('mongoose');
+const { ProductTypeEnum } = require('../config');
 
-const schema = new Schema ({
+const schema = new Schema({
         title: {
             type: String,
             required: true
@@ -51,11 +51,10 @@ const schema = new Schema ({
         },
         userId: {
             type: Schema.Types.ObjectId,
-            ref: 'users'
+            ref: 'User'
         }
     }, {
         timestamps: true
-    }
-);
+    });
 module.exports = model('Product', schema);
 
