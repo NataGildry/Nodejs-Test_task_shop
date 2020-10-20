@@ -13,28 +13,28 @@ module.exports = {
     createProduct: async (req, res, next) => {
         try {
             const product = req.body;
-            const newProduct = new ProductModel({ ...product });
+            const newProduct = new ProductModel({...product});
             await newProduct.save(product);
         } catch (e) {
-           next(e);
+            next(e);
         }
-        res.status(201).json({ message: 'Product have been created' });
+        res.status(201).json({message: 'Product have been created'});
     },
     deleteProduct: async (req, res) => {
         try {
             const params = req.params.id;
             await ProductModel.findByIdAndDelete(params);
         } catch (e) {
-            res.status(500).json({ message: 'Something went wrong.' } + e);
+            res.status(500).json({message: 'Something went wrong.'} + e);
         }
-        res.status(201).json({ message: 'Product have been deleted' });
+        res.status(201).json({message: 'Product have been deleted'});
     },
     updateProduct: async (req, res) => {
         try {
-            const { id } = req.params;
+            const {id} = req.params;
             const product = req.body;
-           await ProductModel.findByIdAndUpdate(
-                { _id: id },
+            await ProductModel.findByIdAndUpdate(
+                {_id: id},
                 {
                     title: product.title,
                     description: product.description,
@@ -50,16 +50,16 @@ module.exports = {
                     userId: product.userId
                 },
                 (err, response) => {
-                    if(err) {
+                    if (err) {
                         throw new Error('No updating');
                     } else {
                         console.log(response);
                     }
                 }
-);
+            );
         } catch (e) {
-            res.status(500).json({ message: 'Something went wrong. Product updating failed' } + e);
+            res.status(500).json({message: 'Something went wrong. Product updating failed'} + e);
         }
-        res.status(201).json({ message: 'Product have been updated' });
+        res.status(201).json({message: 'Product have been updated'});
     }
 };

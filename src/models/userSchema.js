@@ -1,5 +1,4 @@
 const {Schema, model} = require('mongoose');
-const uuidv4 = require('uuid').v4;
 
 const tokenSubModel = {
     token: String,
@@ -7,14 +6,6 @@ const tokenSubModel = {
 };
 
 const schema = new Schema({
-        // _id: {
-        //     type: String,
-        //     default: uuidv4
-        // },
-        // _id: {
-        //     type: Schema.Types.ObjectId,
-        //     ref: 'AccessToken'
-        // },
         email: {
             type: String,
             required: true,

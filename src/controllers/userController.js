@@ -1,9 +1,11 @@
 const UserModel = require('../models/userSchema');
 const {hashPassword} = require('../helpers');
-const {tokinizer} = require('../helpers');
-const {registerValidation} = require('../helpers/emailPasswordValidator');
+const {tokenVerificatorHelper} = require('../helpers');
+const {registerValidation, emailValidator} = require('../helpers/emailPasswordValidator');
 const jwt = require('jsonwebtoken');
 const {config} = require('../config');
+const {Types} = require('mongoose');
+const tokinizer = require('../helpers');
 
 module.exports = {
     getAllUsers: async (req, res) => {
@@ -72,6 +74,45 @@ module.exports = {
             res.end();
         } catch (e) {
             res.status(500).json({message: 'Something went wrong. User Confirmation failed'} + e);
+        }
+    },
+    forgotPassword: async (req, res) => {
+        const user = req.body;
+        const {email} = user;
+        const {error} = emailValidator({email});
+        if (error) {
+            return res.status(400).json({error: error.details[0].message});
+        }
+        try {
+            const candidate = await UserModel.findOne({email});
+
+            if (!candidate) {
+                return new Error('User not found');
+            }
+
+            const token = jwt.sign(
+                // payload data
+                {
+                    id: user._id,
+                },
+                config.JWT_PASS_RESET_SECRET
+            );
+            await UserModel.updateOne(
+                {_id: Types.ObjectId(user._id)},
+                {
+                    $push: {
+                        token
+                    }
+                }
+            );
+            return res.header('userRegister', token).json({
+                error: null,
+                data: {
+                    token,
+                },
+            });
+        } catch (e) {
+            res.status(500).json({message: 'Something went wrong with token'});
         }
     }
 };

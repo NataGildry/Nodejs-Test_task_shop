@@ -20,7 +20,14 @@ const loginValidation = (data) => {
     });
     return schema.validate(data);
 };
+const emailValidator = (data) => {
+    const schema = Joi.object({
+        email: Joi.string().trim().regex(RegExpEnum.email).required()
+    });
+    return schema.validate(data);
+};
 module.exports = {
     registerValidation,
-    loginValidation
+    loginValidation,
+    emailValidator
 };
