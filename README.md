@@ -16,4 +16,7 @@ npm run start
 ##Requirements
 [Postman API Development Environment](https://developers.sap.com/tutorials/api-tools-postman-install.html)
 
-
+##Link for DB 
+```JavaScript
+ MONGODB_URL: 'mongodb://localhost/test_shop'
+```
