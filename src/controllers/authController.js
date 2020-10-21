@@ -7,7 +7,6 @@ const tokenVerificatorHelper = require('../helpers/tokenVerificatorHelper');
 
 module.exports = {
     authUser: async (req, res) => {
-        // validate the user
         const { error } = loginValidation(req.body);
         if(error) {
             return res.status(400).json({ error: error.details[0].message });
