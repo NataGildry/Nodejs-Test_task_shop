@@ -8,58 +8,47 @@ module.exports = {
     getProduct: async (req, res) => {
         const params = req.params.id;
         const product = await ProductModel.findById(params);
-        res.json(product);
+        if(!product) {
+            return res.status(404).json('Product not found');
+        }
+
+        return res.json(product);
     },
-    createProduct: async (req, res, next) => {
+    createProduct: async (req, res) => {
         try {
             const product = req.body;
-            const newProduct = new ProductModel({...product});
+            const newProduct = new ProductModel({ ...product });
             await newProduct.save(product);
         } catch (e) {
-            next(e);
+            res.status(500).json({ message: 'Something went wrong. Product has not been created' } + e);
         }
-        res.status(201).json({message: 'Product have been created'});
+        res.status(201).json({ message: 'Product have been created' });
     },
     deleteProduct: async (req, res) => {
         try {
             const params = req.params.id;
             await ProductModel.findByIdAndDelete(params);
         } catch (e) {
-            res.status(500).json({message: 'Something went wrong.'} + e);
+            res.status(500).json({ message: 'Something went wrong.' } + e);
         }
-        res.status(201).json({message: 'Product have been deleted'});
+        res.status(201).json({ message: 'Product have been deleted' });
     },
     updateProduct: async (req, res) => {
         try {
-            const {id} = req.params;
-            const product = req.body;
-            await ProductModel.findByIdAndUpdate(
-                {_id: id},
-                {
-                    title: product.title,
-                    description: product.description,
-                    type: product.type,
-                    category: product.category,
-                    price: product.price,
-                    hasDiscount: product.hasDiscount,
-                    oldPrice: product.oldPrice,
-                    tags: product.tags,
-                    photos: product.photos,
-                    docs: product.docs,
-                    stockCount: product.stockCount,
-                    userId: product.userId
-                },
-                (err, response) => {
-                    if (err) {
-                        throw new Error('No updating');
-                    } else {
-                        console.log(response);
-                    }
-                }
-            );
+            const { body } = req;
+            const product = await ProductModel.findByIdAndUpdate(req.params.id,
+                body, {
+                    new: true,
+                    runValidators: true,
+                    context: 'query'
+                });
+            if(!product) {
+                return res.status(404).json({ message: `No user with that id of ${req.params.id}` });
+            }
         } catch (e) {
-            res.status(500).json({message: 'Something went wrong. Product updating failed'} + e);
+            res.status(500).json({ message: 'Something went wrong. Product updating failed' } + e);
         }
-        res.status(201).json({message: 'Product have been updated'});
+
+return res.status(201).json({ message: 'Product have been updated' });
     }
 };

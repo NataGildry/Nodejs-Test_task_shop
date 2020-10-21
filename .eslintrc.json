@@ -52,6 +52,7 @@
     "no-case-declarations": "off",
     "no-cond-assign": "error",
     "no-console": "off",
+    "no-underscore-dangle": "off",
     "no-else-return": "error",
     "no-empty": "off",
     "no-empty-functions": "off",
